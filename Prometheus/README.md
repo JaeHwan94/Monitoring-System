@@ -1,6 +1,4 @@
-# Monitoring-System
-
-## Deployment Prometheus
+# Prometheus Deployment
 
 ### Install Helm Chart & add repo ( Used for prometheus Installation )
 
@@ -39,5 +37,10 @@
 -   Install Promehteus 
 
         $ helm install [name] stable/prometheus -f [file_name] ex) helm instll prometheus stable/prometheus -f helm/charts/stable/prometheus/values.yaml
+        
+<hr/>
+
+# Promehteus Query
+
                     
              
