@@ -42,5 +42,16 @@
 
 # Promehteus Query
 
-                    
-             
+### Prometheus Query Using CMD
+        $ curl http://[prometheus-server-ip]:[port]/api/v1/query -d query="[Query]" | jq
+
+### Query
+        * Container CPU Usage Query
+                rate(container_cpu_usage_seconds_total{namespace="[namesapce]", container_name="[container_name]"}[2m])
+
+        * Container Memory Usage Query
+                container_memory_usage_bytes{namespace="[namesapce]", container_name="[container_name]"}
+
+        * Container Network Usage
+                rate(container_network_transmit_bytes_total{namespace="[namesapce]", container_name="[container_name]"}[2m])
+                rate(container_network_receive_bytes_total{namespace="[namesapce]", container_name="[container_name]"}[2m])
