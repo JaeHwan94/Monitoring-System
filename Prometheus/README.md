@@ -2,12 +2,12 @@
 
 ### Install Helm Chart & add repo ( Used for prometheus Installation )
 
--   $ curl -fsSL -o get_helm.sh https://raw.gitusercontent.com/helm/helm/master/scripts/get-helm-3 (helm version 2 => ../scripts/get)
--   $ chmod 700 get_helm.sh
--   $ ./get_helm.sh
--   $ helm version
--   $ helm repo add stable https://kubernetes-charts.storage.googleapis.com/
--   $ helm repo update 
+        $ curl -fsSL -o get_helm.sh https://raw.gitusercontent.com/helm/helm/master/scripts/get-helm-3 (helm version 2 => ../scripts/get)
+        $ chmod 700 get_helm.sh
+        $ ./get_helm.sh
+        $ helm version
+        $ helm repo add stable https://kubernetes-charts.storage.googleapis.com/
+        $ helm repo update 
 
 ### Install Prometheus
 -   Default Configuration
