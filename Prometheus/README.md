@@ -1,49 +1,62 @@
 # Prometheus Deployment
 
 ### Install Helm Chart & add repo ( Used for prometheus Installation )
-
-        $ curl -fsSL -o get_helm.sh https://raw.gitusercontent.com/helm/helm/master/scripts/get-helm-3 (helm version 2 => ../scripts/get)
-        $ chmod 700 get_helm.sh
-        $ ./get_helm.sh
-        $ helm version
-        $ helm repo add stable https://kubernetes-charts.storage.googleapis.com/
-        $ helm repo update 
+* Install Hem Chart
+>   ```bash
+>   $ curl -fsSL -o get_helm.sh https://raw.gitusercontent.com/helm/helm/master/scripts/get-helm-3 (helm version 2 => ../scripts/get)
+>   $ chmod 700 get_helm.sh
+>   $ ./get_helm.sh
+>   $ helm version
+>   ```
+* Add repo
+>   ```bash
+>   $ helm repo add stable https://kubernetes-charts.storage.googleapis.com/
+>   $ helm repo update
+>   ```
 
 ### Install Prometheus
--   Default Configuration
+* Default Configuration
 
-        $ helm install [name] stable/prometheus
+>    ```bash 
+>    $ helm install [name] stable/prometheus
+>    ```
         
 -   Custom Configuration
 
-        1. git clone helm for custionmizing prometheus
-            $ git clone https://github.com/helm/charts.git
+> 1. git clone helm for custionmizing prometheus
+>   ```bash
+>   $ git clone https://github.com/helm/charts.git
+>   ```
 
-        2. modify helm/chart/stable/prometheus/values.yaml file ( alertmanager, server, pushgateway, nodeExporter ...)
-            alertmanager:
-            ...
-                persistentVolume:
-                    enable: true # false -> not install prometheus-alertmanager
-                    accessmodes:
-                    - ReadWriteOnce
-                    mountPath: [ Your PV Path ] # ex) /mnt/nfs/alert_pv
-                    size: [ Your PV Size ] # ex) 2Gi
-                    storageClass: [ Your PV storageClassName ] ex) alert_pv
-                    
-                service:
-                    externalIPs: [ IP ] ex) 192.168.2.1 # default => []
-                    servicePort: [ Port_number ] ex) 8888 # default => 80
-            ...
--   Install Promehteus 
-
-        $ helm install [name] stable/prometheus -f [file_name] ex) helm instll prometheus stable/prometheus -f helm/charts/stable/prometheus/values.yaml
-        
+> 2. modify helm/chart/stable/prometheus/values.yaml file ( alertmanager, server, pushgateway, nodeExporter ...)
+>   ```bash
+>   alertmanager:
+>   ...
+>   persistentVolume:
+>       enable: true # false -> not install prometheus-alertmanager
+>       accessmodes:
+>       - ReadWriteOnce
+>       mountPath: [ Your PV Path ] # ex) /mnt/nfs/alert_pv
+>       size: [ Your PV Size ] # ex) 2Gi
+>       storageClass: [ Your PV storageClassName ] ex) alert_pv
+>
+>   service:
+>       externalIPs: [ IP ] ex) 192.168.2.1 # default => []
+>       servicePort: [ Port_number ] ex) 8888 # default => 80
+>   ...
+>   ```
+* Install Promehteus 
+>   ```bash
+>   $ helm install [name] stable/prometheus -f [file_name] ex) helm instll prometheus stable/prometheus -f helm/charts/stable/prometheus/values.yaml
+>   ```        
 <hr/>
 
 # Promehteus Query
 
 ### Prometheus Query Using CMD
-        $ curl http://[prometheus-server-ip]:[port]/api/v1/query -d query="[Query]" | jq
+>   ```bash
+>   $ curl http://[prometheus-server-ip]:[port]/api/v1/query -d query="[Query]" | jq
+>   ```
 
 ### Query
 > #### Container CPU Usage Query
@@ -88,34 +101,38 @@
 ### Custom Metric 
 
 > #### Send Custom Metric to Promehteus-pushgateway using Python
->       * Sameple Code
->               from prometheus_client import CollectorRegistry, Gauge, push_to_gateway  # module import
->               
->               def send():
->                       registry = CollectorRegistry()
->                       g = Gauge("Test_Metric","Test",['start_time','end_time'],registry=registry) # Gauge(arg1=Metric Name, arg2=Metric Description, arg3=Label_name_list, arg4=registry)
->                       g.labels(strat_time=10,end_time=20).set(10) # Gauge.labels([label1_name]=[label1_name_value],[label2_name]=[label2_value]...).set([Metric_value])
->                       push_to_gateway("http://192.168.2.1:9091",job="Test",registry=registry) # push_to_gateway(arg1=Prometheus pushgateway IP address:Port, arg2=job_name, arg3=registry)
+> * Sameple Code
+>   ```python
+>   from prometheus_client import CollectorRegistry, Gauge, push_to_gateway  # module import
+>   
+>   def send():
+>       registry = CollectorRegistry()
+>       g = Gauge("Test_Metric","Test",['start_time','end_time'],registry=registry) # Gauge(arg1=Metric Name, arg2=Metric Description, arg3=Label_name_list, arg4=registry)
+>       g.labels(strat_time=10,end_time=20).set(10) # Gauge.labels([label1_name]=[label1_name_value],[label2_name]=[label2_value]...).set([Metric_value])
+>       push_to_gateway("http://192.168.2.1:9091",job="Test",registry=registry) # push_to_gateway(arg1=Prometheus pushgateway IP address:Port, arg2=job_name, arg3=registry)
+>   ```
 
 > #### Get Custom Metric
->       $ curl http://192.168.2.1:80/api/v1/query -d query="Test_Metric" | jq # curl http or https:/[prometheus-server-ip]:[port]/api/v1/query -d query="[Custom_Metric_name]"
->       {
->        "status" : "success",
->        "data" : {
->          "resultType": "vector",
->          "result": [
->            {
->              "metric: {
->                "__name__": "Test_Metric",
->                "start_time": "10",
->                "end_time": "20",
->                "job": "Test"
->              },
->              "value": [
->                1591540175.679,
->                "10"
->              ]
->            }
->          ]
->        }
+>   ```bash
+>   $ curl http://192.168.2.1:80/api/v1/query -d query="Test_Metric" | jq # curl http or https:/[prometheus-server-ip]:[port]/api/v1/query -d query="[Custom_Metric_name]"
+>   {
+>       "status" : "success",
+>       "data" : {
+>           "resultType": "vector",
+>           "result": [
+>           {
+>               "metric: {
+>               "__name__": "Test_Metric",
+>               "start_time": "10",
+>               "end_time": "20",
+>               "job": "Test"
+>               },
+>               "value": [
+>                   591540175.679,
+>                   "10"
+>               ]
+>           }
+>           ]
 >       }
+>   }
+>   ```
