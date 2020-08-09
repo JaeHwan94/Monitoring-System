@@ -28,23 +28,27 @@
 >   >   > |prometheus|x|x||x|
 
 ### Start Kiali(visualizing your mesh)
->   >   *Create Secret
->   >   ```bash
->   >       $ USERNAME=$(read -p 'Kiali Username: ' uval && echo -n &uval | base64)
->   >
->   >       $ PASSWD=$(read -p 'Kiali Passpharse: ' pval && echo -n &pval | base64)
->   >
->   >       $ cat <<EOF | kubectl apply -f -
->   >       apiVersion: v1
->   >       kind: secret
->   >       metadata:
->   >           name: kiali
->   >           namespace: istio-system
->   >           labels:
->   >               app: kiali
->   >       type: Opaque
->   >       data:
->   >           username: $USERNAME
->   >           passphrase: $PASSWD
->   >       EOF
->   >   ```
+>   * Create Secret
+>   ```bash
+>       $ USERNAME=$(read -p 'Kiali Username: ' uval && echo -n &uval | base64)
+>
+>       $ PASSWD=$(read -p 'Kiali Passpharse: ' pval && echo -n &pval | base64)
+>
+>       $ cat <<EOF | kubectl apply -f -
+>       apiVersion: v1
+>       kind: secret
+>       metadata:
+>           name: kiali
+>           namespace: istio-system
+>           labels:
+>               app: kiali
+>       type: Opaque
+>       data:
+>           username: $USERNAME
+>           passphrase: $PASSWD
+>       EOF
+>   ```
+>   * Open Kiali UI
+>   ```bash
+>   $ istioctl dashboard kiali
+>   ```
